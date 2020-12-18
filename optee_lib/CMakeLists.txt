@@ -6,8 +6,8 @@
 # Build AARCH64
 #  $ mkdir build
 #  $ cd build
-#  $ cmake -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DOPTEE_TREE=/path/to/optee/ ..
-#  $ make CFLAGS="-mstrict-align -mgeneral-regs-only"
+#  $ cmake -DCMAKE_C_CFLAGS="-mstrict-align -mgeneral-regs-only" -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DOPTEE_TREE=/path/to/optee/ ..
+#  $ make
 #
 # Build ARM
 #  $ mkdir build
@@ -37,7 +37,36 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5.0)
 project(se050)
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${FLAGS} "-std=gnu99 \
+set(CPACK_PACKAGE_VERSION_MAJOR "0")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_SOURCE_GENERATOR "TBZ2")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+
+set(CPACK_SOURCE_IGNORE_FILES "/glue/;\
+/build/CMakeFiles/;\
+/buildarm/CMakeFiles/;\
+/build/_CPack_Packages/;\
+/buildarm/_CPack_Packages/;\
+/CMakeLists.txt;\
+/build/cmake_install.cmake;\
+/build/CPackConfig.cmake;\
+/build/CPackSourceConfig.cmake;\
+/build/CMakeCache.txt;\
+/build/Makefile;\
+/buildarm/cmake_install.cmake;\
+/buildarm/CPackConfig.cmake;\
+/buildarm/CPackSourceConfig.cmake;\
+/buildarm/CMakeCache.txt;\
+/buildarm/Makefile;\
+~$;\
+${CPACK_SOURCE_IGNORE_FILES}")
+
+include(CPack)
+
+add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 \
                                     -fdiagnostics-show-option \
                                     -Wall -Os \
                                     -ffunction-sections -fdata-sections \

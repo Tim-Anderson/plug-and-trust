@@ -9,7 +9,8 @@ The relevant OP-TEE driver can be found at https://github.com/OP-TEE/optee_os/pu
 
 The stack has been validated on iMX8mm and iMX6ull platforms fitted with the ARD SE050 https://www.nxp.com/products/security-and-authentication/authentication/edgelock-se050-development-kit:OM-SE050X for the following operations::
 
-   * RSA 2048, 4096
+   * RSA 2048, 4096 encrypt/decrypt/sign/verify
+   * ECC sign/verify
    * AES CTR 
    * RNG
    * SCP03 (i2c communications between the processor and the device are encrypted)
@@ -26,8 +27,8 @@ For arm64::
  
  $ mkdir build
  $ cd build
- $ cmake -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DOPTEE_TREE=/path/to/optee/ ..
- $ make CFLAGS="-mstrict-align -mgeneral-regs-only"
+ $ cmake -DCMAKE_CFLAGS="-mstrict-align -mgeneral-regs-only" -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DOPTEE_TREE=/path/to/optee/ ..
+ $ make 
 
 For arm::
 
