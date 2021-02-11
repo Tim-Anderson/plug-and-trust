@@ -1,1 +1,1 @@
-../../optee_lib/glue/include/fsl_sss_ftr.h
+../../fsl_sss_ftr.h
