@@ -12,10 +12,12 @@ static ApduTransceiveRawFunction_t transceive_raw;
 static ApduTransceiveFunction_t transceive;
 static struct mutex lock = MUTEX_INITIALIZER;
 
-void smCom_Init(ApduTransceiveFunction_t t, ApduTransceiveRawFunction_t traw)
+uint16_t smCom_Init(ApduTransceiveFunction_t t, ApduTransceiveRawFunction_t traw)
 {
 	transceive_raw = traw;
 	transceive = t;
+
+	return SMCOM_OK;
 }
 
 void smCom_DeInit(void)
