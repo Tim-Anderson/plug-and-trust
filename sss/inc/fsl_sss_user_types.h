@@ -1,8 +1,7 @@
 /*
- * Copyright 2018,2019 NXP
- * All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause
+ * Copyright 2018,2019 NXP
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef SSS_APIS_INC_fsl_sss_user_types_H_
@@ -74,9 +73,6 @@ typedef struct _sss_user_impl_object
     /*! Application specific key identifier. The keyId is kept in the key  store
      * along with the key data and other properties. */
     uint32_t keyId;
-
-    /*! Implementation specific part */
-    uint8_t key[16];
 } sss_user_impl_object_t;
 
 typedef struct _sss_user_impl_derive_key
@@ -104,9 +100,6 @@ typedef struct _sss_user_impl_symmetric
     sss_user_impl_object_t *keyObject;
     sss_algorithm_t algorithm;
     sss_mode_t mode;
-
-    /*! Implementation specific part */
-    void *cipher;
 } sss_user_impl_symmetric_t;
 
 typedef struct _sss_user_impl_mac
@@ -116,9 +109,6 @@ typedef struct _sss_user_impl_mac
     sss_user_impl_object_t *keyObject;
     sss_algorithm_t algorithm; /*!  */
     sss_mode_t mode;           /*!  */
-
-    /*! Implementation specific part */
-    void *mac;
 } sss_user_impl_mac_t;
 
 typedef struct _sss_user_impl_digest

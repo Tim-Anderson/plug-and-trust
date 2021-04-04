@@ -1,8 +1,7 @@
 /*
- * Copyright 2018-2020 NXP
- * All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause
+ * Copyright 2018-2020 NXP
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef SSS_APIS_INC_FSL_SSS_FTR_H_
@@ -88,38 +87,6 @@
  * Selection of Applet version 06_00 enables SE051 features.
  *
  */
-/** SE050 */
-#define SSS_HAVE_SE05X_VER_03_XX 1
-
-/** NXP Internal - 4.4 */
-#define SSS_HAVE_SE05X_VER_04_04 0
-
-/** NXP Internal - 4.8 */
-#define SSS_HAVE_SE05X_VER_04_08 0
-
-/** NXP Internal - 4.12 */
-#define SSS_HAVE_SE05X_VER_04_12 0
-
-/** NXP Internal - 5.00 */
-#define SSS_HAVE_SE05X_VER_05_00 0
-
-/** NXP Internal - 5.02 */
-#define SSS_HAVE_SE05X_VER_05_02 0
-
-/** NXP Internal - 5.04 */
-#define SSS_HAVE_SE05X_VER_05_04 0
-
-/** NXP Internal - 5.06 */
-#define SSS_HAVE_SE05X_VER_05_06 0
-
-/** NXP Internal - 5.08 */
-#define SSS_HAVE_SE05X_VER_05_08 0
-
-/** NXP Internal - 5.10 */
-#define SSS_HAVE_SE05X_VER_05_10 0
-
-/** NXP Internal - 5.12 */
-#define SSS_HAVE_SE05X_VER_05_12 0
 
 /** SE050 */
 #define SSS_HAVE_SE05X_VER_03_XX 1
@@ -167,7 +134,7 @@
  * This then becomes integration without mbedTLS/OpenSSL for SCP03 / AESKey.
  *
  * .. note:: ECKey abstraction is not implemented/available yet. */
-#define SSS_HAVE_HOSTCRYPTO_USER 1
+#define SSS_HAVE_HOSTCRYPTO_USER 0
 
 /** NO Host Crypto
  * Note, this is unsecure and only provided for experimentation
@@ -193,7 +160,7 @@
  */
 
 /** Use SSS Layer ALT implementation */
-#define SSS_HAVE_MBEDTLS_ALT_SSS 0
+#define SSS_HAVE_MBEDTLS_ALT_SSS 1
 
 /** Legacy implementation */
 #define SSS_HAVE_MBEDTLS_ALT_A71CH 0
@@ -201,7 +168,7 @@
 /** Not using any mbedTLS_ALT
  *
  * When this is selected, cloud demos can not work with mbedTLS */
-#define SSS_HAVE_MBEDTLS_ALT_NONE 1
+#define SSS_HAVE_MBEDTLS_ALT_NONE 0
 
 #if (( 0                             \
     + SSS_HAVE_MBEDTLS_ALT_SSS       \
@@ -231,7 +198,7 @@
 #define SSS_HAVE_SCP_NONE 0
 
 /** Use SSS Layer for SCP.  Used for SE050 family. */
-#define SSS_HAVE_SCP_SCP03_SSS 1
+#define SSS_HAVE_SCP_SCP03_SSS 0
 
 /** Use Host Crypto Layer for SCP03. Legacy implementation. Used for older demos of A71CH Family. */
 #define SSS_HAVE_SCP_SCP03_HOSTCRYPTO 0
@@ -279,6 +246,34 @@
     + SSS_HAVE_FIPS_140_3            \
     ) == 0)
 #        error "Enable at-least one of 'FIPS'"
+#endif
+
+
+
+/** SBL : Enable/Disable SBL Bootable support
+ *
+ * This option is to enable/disable boot from SBL by switching linker address
+ */
+
+/** Not SBL bootable */
+#define SSS_HAVE_SBL_NONE 1
+
+/** SE050 based LPC55S SBL bootable */
+#define SSS_HAVE_SBL_SBL_LPC55S 0
+
+#if (( 0                             \
+    + SSS_HAVE_SBL_NONE              \
+    + SSS_HAVE_SBL_SBL_LPC55S        \
+    ) > 1)
+#        error "Enable only one of 'SBL'"
+#endif
+
+
+#if (( 0                             \
+    + SSS_HAVE_SBL_NONE              \
+    + SSS_HAVE_SBL_SBL_LPC55S        \
+    ) == 0)
+#        error "Enable at-least one of 'SBL'"
 #endif
 
 
@@ -399,7 +394,7 @@
 #define SSSFTR_SE05X_KEY_GET 1
 
 /** SE05X Secure Element : Authenticate via ECKey */
-#define SSSFTR_SE05X_AuthECKey 0
+#define SSSFTR_SE05X_AuthECKey 1
 
 /** SE05X Secure Element : Allow creation of user/authenticated session.
  *
@@ -612,6 +607,11 @@
 #   undef SSS_HAVE_EC_ED
 #   define SSS_HAVE_EC_ED 0
 #endif
+#endif
+
+
+#if SSS_HAVE_RSA
+#   define SSS_HAVE_RSA_4K 1
 #endif
 
 /* ========= Calculated values : END ======================== */
