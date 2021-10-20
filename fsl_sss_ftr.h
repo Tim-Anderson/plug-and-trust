@@ -87,6 +87,38 @@
  * Selection of Applet version 06_00 enables SE051 features.
  *
  */
+/** SE050 */
+#define SSS_HAVE_SE05X_VER_03_XX 1
+
+/** NXP Internal - 4.4 */
+#define SSS_HAVE_SE05X_VER_04_04 0
+
+/** NXP Internal - 4.8 */
+#define SSS_HAVE_SE05X_VER_04_08 0
+
+/** NXP Internal - 4.12 */
+#define SSS_HAVE_SE05X_VER_04_12 0
+
+/** NXP Internal - 5.00 */
+#define SSS_HAVE_SE05X_VER_05_00 0
+
+/** NXP Internal - 5.02 */
+#define SSS_HAVE_SE05X_VER_05_02 0
+
+/** NXP Internal - 5.04 */
+#define SSS_HAVE_SE05X_VER_05_04 0
+
+/** NXP Internal - 5.06 */
+#define SSS_HAVE_SE05X_VER_05_06 0
+
+/** NXP Internal - 5.08 */
+#define SSS_HAVE_SE05X_VER_05_08 0
+
+/** NXP Internal - 5.10 */
+#define SSS_HAVE_SE05X_VER_05_10 0
+
+/** NXP Internal - 5.12 */
+#define SSS_HAVE_SE05X_VER_05_12 0
 
 /** SE050 */
 #define SSS_HAVE_SE05X_VER_03_XX 1
@@ -134,7 +166,7 @@
  * This then becomes integration without mbedTLS/OpenSSL for SCP03 / AESKey.
  *
  * .. note:: ECKey abstraction is not implemented/available yet. */
-#define SSS_HAVE_HOSTCRYPTO_USER 0
+#define SSS_HAVE_HOSTCRYPTO_USER 1
 
 /** NO Host Crypto
  * Note, this is unsecure and only provided for experimentation
@@ -160,7 +192,7 @@
  */
 
 /** Use SSS Layer ALT implementation */
-#define SSS_HAVE_MBEDTLS_ALT_SSS 1
+#define SSS_HAVE_MBEDTLS_ALT_SSS 0
 
 /** Legacy implementation */
 #define SSS_HAVE_MBEDTLS_ALT_A71CH 0
@@ -168,7 +200,7 @@
 /** Not using any mbedTLS_ALT
  *
  * When this is selected, cloud demos can not work with mbedTLS */
-#define SSS_HAVE_MBEDTLS_ALT_NONE 0
+#define SSS_HAVE_MBEDTLS_ALT_NONE 1
 
 #if (( 0                             \
     + SSS_HAVE_MBEDTLS_ALT_SSS       \
@@ -198,7 +230,7 @@
 #define SSS_HAVE_SCP_NONE 0
 
 /** Use SSS Layer for SCP.  Used for SE050 family. */
-#define SSS_HAVE_SCP_SCP03_SSS 0
+#define SSS_HAVE_SCP_SCP03_SSS 1
 
 /** Use Host Crypto Layer for SCP03. Legacy implementation. Used for older demos of A71CH Family. */
 #define SSS_HAVE_SCP_SCP03_HOSTCRYPTO 0
@@ -394,7 +426,7 @@
 #define SSSFTR_SE05X_KEY_GET 1
 
 /** SE05X Secure Element : Authenticate via ECKey */
-#define SSSFTR_SE05X_AuthECKey 1
+#define SSSFTR_SE05X_AuthECKey 0
 
 /** SE05X Secure Element : Allow creation of user/authenticated session.
  *
@@ -413,26 +445,26 @@
 #define SSSFTR_SE05X_CREATE_DELETE_CRYPTOOBJ 1
 
 /** Software : Symmetric AES */
-#define SSSFTR_SW_AES 1
-
+#define SSSFTR_SW_AES 0
+ 
 /** Software : Elliptic Curve Cryptography */
-#define SSSFTR_SW_ECC 1
+#define SSSFTR_SW_ECC 0
 
 /** Software : RSA */
-#define SSSFTR_SW_RSA 1
+#define SSSFTR_SW_RSA 0
 
 /** Software : KEY operations : SET Key */
-#define SSSFTR_SW_KEY_SET 1
+#define SSSFTR_SW_KEY_SET 0
 
 /** Software : KEY operations : GET Key */
-#define SSSFTR_SW_KEY_GET 1
+#define SSSFTR_SW_KEY_GET 0
 
 /** Software : Used as a test counterpart
  *
  * e.g. Major part of the mebdTLS SSS layer is purely used for
  * testing of Secure Element implementation, and can be avoided
  * fully during many production scenarios. */
-#define SSSFTR_SW_TESTCOUNTERPART 1
+#define SSSFTR_SW_TESTCOUNTERPART 0
 
 /* ====================================================================== *
  * == Computed Options ================================================== *

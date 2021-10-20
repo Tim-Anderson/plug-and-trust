@@ -115,6 +115,7 @@ FILE(
     ../sss/ex/inc
     ../hostlib/hostLib/inc
     ../hostlib/hostLib/libCommon/infra
+    ../hostlib/hostLib/libCommon/log
     ../hostlib/hostLib/libCommon/smCom
     ../hostlib/hostLib/libCommon/smCom/T1oI2C
     ../hostlib/hostLib/se05x_03_xx_xx
