@@ -116,12 +116,6 @@ sss_status_t sss_util_asn1_rsa_parse_private_allow_invalid_key(const uint8_t *ke
     uint8_t **coefficient,
     size_t *coefficientlen);
 
-sss_status_t sss_util_asn1_rsa_parse_public_nomalloc(
-    const uint8_t *key, size_t keylen, uint8_t *modulus, size_t *modlen, uint8_t *pubExp, size_t *pubExplen);
-
-sss_status_t sss_util_asn1_rsa_parse_public_nomalloc_complete_modulus(
-    const uint8_t *key, size_t keylen, uint8_t *modulus, size_t *modlen, uint8_t *pubExp, size_t *pubExplen);
-
 sss_status_t sss_util_asn1_rsa_parse_public(
     const uint8_t *key, size_t keylen, uint8_t **modulus, size_t *modlen, uint8_t **pubExp, size_t *pubExplen);
 

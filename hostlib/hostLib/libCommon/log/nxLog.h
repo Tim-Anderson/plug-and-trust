@@ -78,23 +78,18 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
-#define NX_LEVEL_DEBUG 4
-#define NX_LEVEL_INFO 3
+#define NX_LEVEL_DEBUG 0
+#define NX_LEVEL_INFO 1
 #define NX_LEVEL_WARN 2
-#define NX_LEVEL_ERROR 1
+#define NX_LEVEL_ERROR 3
 
 #define NX_LOG_D
 #define NX_LOG_I
 #define NX_LOG_W
 #define NX_LOG_E
 
-/*
- * Initialised the multithreading locks if running on Native or FreeRtos.
- * If running on system where mutex or semaphore is not available, return
- * success without doing anything.
- */
-uint8_t nLog_Init();
-void nLog_DeInit();
+uint8_t nLog_Init(void);
+void nLog_DeInit(void);
 
 void nLog(const char *comp, int level, const char *format, ...);
 

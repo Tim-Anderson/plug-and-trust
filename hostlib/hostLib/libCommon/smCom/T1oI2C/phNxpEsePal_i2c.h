@@ -28,7 +28,7 @@
 /*!
  * \brief ESE Poll timeout (min 1 miliseconds)
  */
-#define ESE_POLL_DELAY_MS (1)
+#define ESE_POLL_DELAY_MS (10)
 /*!
  * \brief ESE Poll timeout.
  * As Max WTX timeout is 1sec, select ESE_NAD_POLLING_MAX count in such a way that WTX request frm SE is not skiped
