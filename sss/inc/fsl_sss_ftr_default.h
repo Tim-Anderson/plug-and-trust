@@ -1,8 +1,7 @@
 /*
- * Copyright 2018-2020 NXP
- * All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause
+ * Copyright 2018-2020 NXP
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef SSS_APIS_INC_FSL_SSS_FTR_H_
@@ -241,10 +240,10 @@
  */
 
 /** NO FIPS */
-#define SSS_HAVE_FIPS_NONE 0
+#define SSS_HAVE_FIPS_NONE 1
 
 /** SE050 IC FIPS */
-#define SSS_HAVE_FIPS_SE050 1
+#define SSS_HAVE_FIPS_SE050 0
 
 /** FIPS 140-2 */
 #define SSS_HAVE_FIPS_140_2 0
@@ -269,6 +268,34 @@
     + SSS_HAVE_FIPS_140_3            \
     ) == 0)
 #        error "Enable at-least one of 'FIPS'"
+#endif
+
+
+
+/** SBL : Enable/Disable SBL Bootable support
+ *
+ * This option is to enable/disable boot from SBL by switching linker address
+ */
+
+/** Not SBL bootable */
+#define SSS_HAVE_SBL_NONE 1
+
+/** SE050 based LPC55S SBL bootable */
+#define SSS_HAVE_SBL_SBL_LPC55S 0
+
+#if (( 0                             \
+    + SSS_HAVE_SBL_NONE              \
+    + SSS_HAVE_SBL_SBL_LPC55S        \
+    ) > 1)
+#        error "Enable only one of 'SBL'"
+#endif
+
+
+#if (( 0                             \
+    + SSS_HAVE_SBL_NONE              \
+    + SSS_HAVE_SBL_SBL_LPC55S        \
+    ) == 0)
+#        error "Enable at-least one of 'SBL'"
 #endif
 
 
@@ -548,6 +575,12 @@
 /* Montgomery Curve is enabled */
 #define SSS_HAVE_EC_MONT 1
 
+/* MIFARE DESFire is enabled */
+#define SSS_HAVE_MIFARE_DESFIRE 1
+
+/* PBKDF2 is enabled */
+#define SSS_HAVE_PBKDF2 1
+
 /* TLS handshake support on SE is enabled */
 #define SSS_HAVE_TLS_HANDSHAKE 1
 
@@ -603,6 +636,35 @@
 #   define SSS_HAVE_EC_ED 0
 #endif
 #endif
+
+#if SSS_HAVE_RSA
+#   define SSS_HAVE_RSA_4K 1
+#endif
+
+#if SSS_HAVE_ECC
+#   define SSS_HAVE_EC_NIST_192 1
+#   define SSS_HAVE_EC_NIST_224 1
+#   define SSS_HAVE_EC_NIST_256 1
+#   define SSS_HAVE_EC_NIST_384 1
+#   define SSS_HAVE_EC_NIST_521 1
+#   define SSS_HAVE_EC_BP 1
+#   define SSS_HAVE_EC_NIST_K 1
+#   define SSS_HAVE_ECDAA 1
+#   define SSS_HAVE_EDDSA 1
+#if SSS_HAVE_APPLET_SE05X_A
+#   undef SSS_HAVE_ECDAA
+#   undef SSS_HAVE_EDDSA
+#   define SSS_HAVE_ECDAA 0
+#   define SSS_HAVE_EDDSA 0
+#endif
+#endif
+
+#if SSS_HAVE_APPLET
+#define SSS_HAVE_HASH_1 1
+#define SSS_HAVE_HASH_224 1
+#define SSS_HAVE_HASH_512 1
+#endif
+
 
 /* ========= Calculated values : END ======================== */
 

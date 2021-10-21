@@ -1,8 +1,7 @@
 /*
-* Copyright 2019,2020 NXP
-* All rights reserved.
 *
-* SPDX-License-Identifier: BSD-3-Clause
+* Copyright 2019,2020 NXP
+* SPDX-License-Identifier: Apache-2.0
 */
 
 /** @file */
@@ -645,7 +644,7 @@ typedef enum
     kSE05x_TransientIndicator_TRANSIENT = 0x02,
 } SE05x_TransientIndicator_t;
 
-/** TODO */
+/** Whether object attribute is set */
 typedef enum
 {
     /** Invalid */
@@ -752,7 +751,7 @@ typedef enum
 /**
  * the maximum APDU payload length will be smaller, depending on which protocol applies, etc.
  */
-#define SE050_MAX_APDU_PAYLOAD_LENGTH 896
+#define SE050_MAX_APDU_PAYLOAD_LENGTH 892
 //#define SE050_DEFAULT_MAX_ATTEMPTS 10
 
 /** 3 MSBit for instruction characteristics. */
@@ -939,6 +938,7 @@ typedef enum
 /** Symmetric keys */
 typedef enum
 {
+    kSE05x_SymmKeyType_NA = 0,
     kSE05x_SymmKeyType_AES = kSE05x_P1_AES,
     kSE05x_SymmKeyType_DES = kSE05x_P1_DES,
     kSE05x_SymmKeyType_HMAC = kSE05x_P1_HMAC,

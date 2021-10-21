@@ -1,1 +1,1 @@
-../../hostlib/hostLib/libCommon/infra/nxLog_App.h
+../../hostlib/hostLib/libCommon/log/nxLog_App.h

@@ -1,5 +1,4 @@
 /*
- * Copyright 2010-2014,2018-2020 NXP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +16,7 @@
 #define _PHNXPESE_INTERNAL_H_
 
 #include <phNxpEse_Api.h>
+#include <i2c_a7.h>
 
 #ifdef T1oI2C_UM1225_SE050
 /* MW version 02.13.00 onwards */
@@ -33,9 +33,6 @@ typedef enum
    ESE_STATUS_IDLE,
    ESE_STATUS_OPEN,
 } phNxpEse_LibStatus;
-
-/* Macros definition */
-#define MAX_DATA_LEN      260
 
 /* I2C Control structure */
 typedef struct phNxpEse_Context

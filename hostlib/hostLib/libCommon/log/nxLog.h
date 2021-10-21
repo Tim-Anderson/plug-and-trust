@@ -1,8 +1,7 @@
 /*
-* Copyright 2018 NXP
-* All rights reserved.
 *
-* SPDX-License-Identifier: BSD-3-Clause
+* Copyright 2018 NXP
+* SPDX-License-Identifier: Apache-2.0
 */
 
 #ifndef NX_LOG_H
@@ -88,6 +87,9 @@ extern "C" {
 #define NX_LOG_I
 #define NX_LOG_W
 #define NX_LOG_E
+
+uint8_t nLog_Init(void);
+void nLog_DeInit(void);
 
 void nLog(const char *comp, int level, const char *format, ...);
 

@@ -1,1 +1,1 @@
-../../hostlib/hostLib/libCommon/infra/nxLog_scp.h
+../../hostlib/hostLib/libCommon/log/nxLog_scp.h

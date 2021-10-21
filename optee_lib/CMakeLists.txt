@@ -39,7 +39,7 @@ project(se050)
 
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "2")
+set(CPACK_PACKAGE_VERSION_PATCH "3")
 set(CPACK_SOURCE_GENERATOR "TBZ2")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
@@ -115,6 +115,7 @@ FILE(
     ../sss/ex/inc
     ../hostlib/hostLib/inc
     ../hostlib/hostLib/libCommon/infra
+    ../hostlib/hostLib/libCommon/log
     ../hostlib/hostLib/libCommon/smCom
     ../hostlib/hostLib/libCommon/smCom/T1oI2C
     ../hostlib/hostLib/se05x_03_xx_xx

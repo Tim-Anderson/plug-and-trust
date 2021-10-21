@@ -1,8 +1,7 @@
 /*
-* Copyright 2018,2020 NXP
-* All rights reserved.
 *
-* SPDX-License-Identifier: BSD-3-Clause
+* Copyright 2018,2020 NXP
+* SPDX-License-Identifier: Apache-2.0
 */
 
 #ifdef __cplusplus
@@ -15,6 +14,17 @@ extern "C" {
 #include <inttypes.h>
 
 #include "sm_printf.h"
+
+#if USE_RTOS
+#include "FreeRTOS.h"
+#include "semphr.h"
+#endif
+
+#if (__GNUC__ && !AX_EMBEDDED) || (USE_RTOS)
+#define USE_LOCK 1
+#else
+#define USE_LOCK 0
+#endif
 #if defined(_MSC_VER)
 #include <windows.h>
 #endif
@@ -80,9 +90,9 @@ static void ansi_reSetColor(void);
 #define USE_COLORED_LOGS 1
 
 #if NX_LOG_SHORT_PREFIX
-static const char *szLevel[] = {"D", "I", "W", "E"};
+static const char *szLevel[] = {"E", "W", "I", "D"};
 #else
-static const char *szLevel[] = {"DEBUG", "INFO ", "WARN ", "ERROR"};
+static const char *szLevel[] = {"ERROR", "WARN ", "INFO ", "DEBUG"};
 #endif
 
 #if AX_EMBEDDED
@@ -95,21 +105,103 @@ static const char *szLevel[] = {"DEBUG", "INFO ", "WARN ", "ERROR"};
 #include "smCom.h"
 #endif
 
+#if USE_RTOS
+static SemaphoreHandle_t gLogginglock;
+#elif (__GNUC__ && !AX_EMBEDDED)
+#include<pthread.h>
+/* Only for base session with os */
+static pthread_mutex_t gLogginglock;
+#endif
+static void nLog_AcquireLock();
+static void nLog_ReleaseLock();
+#if USE_LOCK
+static uint8_t lockInitialised = false;
+#endif
+static void nLog_AcquireLock()
+{
+#if USE_LOCK
+    if (lockInitialised) {
+#if USE_RTOS
+        if (xSemaphoreTake(gLogginglock, portMAX_DELAY) != pdTRUE) {
+            PRINTF("Acquiring logging semaphore failed");
+        }
+#elif (__GNUC__ && !AX_EMBEDDED)
+        if (pthread_mutex_lock(&gLogginglock) != 0) {
+            PRINTF("Acquiring logging mutext failed");
+        }
+#endif
+    }
+#endif
+}
+
+static void nLog_ReleaseLock()
+{
+#if USE_LOCK
+    if (lockInitialised) {
+#if USE_RTOS
+        if (xSemaphoreGive(gLogginglock) != pdTRUE) {
+            PRINTF("Releasing logging semaphore failed");
+        }
+#elif (__GNUC__ && !AX_EMBEDDED)
+        if (pthread_mutex_unlock(&gLogginglock) != 0) {
+            PRINTF("Releasing logging semaphore failed");
+        }
+#endif
+    }
+#endif
+}
+
+uint8_t nLog_Init()
+{
+#if USE_LOCK
+#if USE_RTOS
+    gLogginglock = xSemaphoreCreateMutex();
+    if (gLogginglock == NULL) {
+        PRINTF("xSemaphoreCreateMutex failed");
+        return 1;
+    }
+#elif (__GNUC__ && !AX_EMBEDDED)
+    if (pthread_mutex_init(&gLogginglock, NULL) != 0) {
+        PRINTF("pthread_mutex_init failed");
+        return 1;
+    }
+#endif
+    lockInitialised = true;
+#endif
+    return 0;
+}
+
+void nLog_DeInit()
+{
+#if USE_LOCK
+#if USE_RTOS
+    if (gLogginglock != NULL) {
+    	vSemaphoreDelete(gLogginglock);
+        gLogginglock = NULL;
+    }
+#elif (__GNUC__ && !AX_EMBEDDED)
+    pthread_mutex_destroy(&gLogginglock);
+#endif
+    lockInitialised = false;
+#endif
+}
+
 /* Used for scenarios other than LPC55S_NS */
 void nLog(const char *comp, int level, const char *format, ...)
 {
+    nLog_AcquireLock();
     setColor(level);
-    PRINTF("%-6s:%s:", comp, szLevel[level]);
+    PRINTF("%-6s:%s:", comp, szLevel[level-1]);
     if (format == NULL) {
         /* Nothing */
 #ifdef SMCOM_JRCP_V2
-        smCom_Echo(NULL, comp, szLevel[level], "");
+        smCom_Echo(NULL, comp, szLevel[level-1], "");
 #endif // SMCOM_JRCP_V2
     }
     else if (format[0] == '\0') {
         /* Nothing */
 #ifdef SMCOM_JRCP_V2
-        smCom_Echo(NULL, comp, szLevel[level], "");
+        smCom_Echo(NULL, comp, szLevel[level-1], "");
 #endif // SMCOM_JRCP_V2
     }
     else {
@@ -121,18 +213,20 @@ void nLog(const char *comp, int level, const char *format, ...)
         va_end(vArgs);
         PRINTF("%s", buffer);
 #ifdef SMCOM_JRCP_V2
-        smCom_Echo(NULL, comp, szLevel[level], buffer);
+        smCom_Echo(NULL, comp, szLevel[level-1], buffer);
 #endif // SMCOM_JRCP_V2
     }
     reSetColor();
     PRINTF(szEOL);
+    nLog_ReleaseLock();
 }
 
 void nLog_au8(const char *comp, int level, const char *message, const unsigned char *array, size_t array_len)
 {
     size_t i;
+    nLog_AcquireLock();
     setColor(level);
-    PRINTF("%-6s:%s:%s (Len=%" PRId32 ")", comp, szLevel[level], message, (int32_t)array_len);
+    PRINTF("%-6s:%s:%s (Len=%" PRId32 ")", comp, szLevel[level-1], message, (int32_t)array_len);
     for (i = 0; i < array_len; i++) {
         if (0 == (i % 16)) {
             PRINTF(szEOL);
@@ -155,6 +249,7 @@ void nLog_au8(const char *comp, int level, const char *message, const unsigned c
     }
     reSetColor();
     PRINTF(szEOL);
+    nLog_ReleaseLock();
 }
 
 static void setColor(int level)
@@ -220,9 +315,11 @@ static void msvc_reSetColor()
 static void ansi_setColor(int level)
 {
 #if USE_COLORED_LOGS
+#if !AX_EMBEDDED
     if (!isatty(fileno(stdout))) {
         return;
     }
+#endif
 
     switch (level) {
     case NX_LEVEL_ERROR:
@@ -249,9 +346,11 @@ static void ansi_setColor(int level)
 static void ansi_reSetColor()
 {
 #if USE_COLORED_LOGS
+#if !AX_EMBEDDED
     if (!isatty(fileno(stdout))) {
         return;
     }
+#endif
     PRINTF(COLOR_RESET);
 #endif // USE_COLORED_LOGS
 }
