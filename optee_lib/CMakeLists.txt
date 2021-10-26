@@ -97,6 +97,7 @@ FILE(
      glue/smCom.c
      glue/user.c
      glue/der.c
+     glue/apdu.c
 )
 
 add_library(${PROJECT_NAME} ${SOURCES})
