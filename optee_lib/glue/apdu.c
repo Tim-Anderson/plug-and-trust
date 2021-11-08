@@ -16,8 +16,10 @@ sss_status_t sss_se05x_do_apdu(Se05xSession_t *ctx,
 	smStatus_t status = SM_NOT_OK;
 	tlvHeader_t hdr = { 0 };
 
-	if (hdr_len != 4)
+	if (hdr_len != 4) {
+		*dst_len = 0;
 		return kStatus_SSS_Fail;
+	}
 
 	hdr.hdr[0] = *(header + 0);
 	hdr.hdr[1] = *(header + 1);
@@ -45,11 +47,14 @@ sss_status_t sss_se05x_do_apdu(Se05xSession_t *ctx,
 						dst_data, dst_len);
 		break;
 	default:
+		*dst_len = 0;
 		return kStatus_SSS_Fail;
 	}
 
-	if (status != SM_OK)
+	if (status != SM_OK) {
+		*dst_len = 0;
 		return kStatus_SSS_Fail;
+	}
 
 	return kStatus_SSS_Success;
 }
