@@ -8,7 +8,7 @@
 #define APDU_H
 
 #include "apduComm.h"
-#include <crypto/crypto_secure_element.h>
+#include <crypto/crypto_se.h>
 #include <fsl_sss_api.h>
 #include "se05x_tlv.h"
 
