@@ -460,7 +460,8 @@ sss_status_t sss_se05x_session_open(sss_se05x_session_t *session,
             se05xSession->fp_Transform = &se05x_Transform_scp;
         }
         else {
-            LOG_E("Could not set SCP03 Secure Channel");
+	    /* OP-TEE will try different keys, downgrade error to warning */
+            LOG_W("SCP03 keys invalid, authentication error");
         }
     }
 #else
@@ -545,6 +546,13 @@ sss_status_t sss_se05x_session_open(sss_se05x_session_t *session,
     if (status == SM_OK) {
         session->subsystem = subsystem;
         retval             = kStatus_SSS_Success;
+
+	if (pAuthCtx && pAuthCtx->auth.ctx.eckey.pDyn_ctx) {
+		if (pAuthCtx->auth.ctx.eckey.pDyn_ctx->authType == kSSS_AuthType_AESKey ||
+			pAuthCtx->auth.ctx.eckey.pDyn_ctx->authType == kSSS_AuthType_SCP03) {
+			nLog("sss", 0xff, "SCP03 enabled");
+		}
+	}
     }
     else {
         memset(session, 0x00, sizeof(*session));
