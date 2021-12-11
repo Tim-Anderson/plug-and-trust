@@ -117,11 +117,20 @@
 /** NXP Internal - 5.12 */
 #define SSS_HAVE_SE05X_VER_05_12 0
 
-/** SE050 */
+/** Default version to SE050 when not defined */
+#if !defined(SSS_HAVE_SE05X_VER_03_XX) && !defined(SSS_HAVE_SE05X_VER_06_00)
 #define SSS_HAVE_SE05X_VER_03_XX 1
+#endif
+
+/** SE050 */
+#ifndef SSS_HAVE_SE05X_VER_03_XX
+#define SSS_HAVE_SE05X_VER_03_XX 0
+#endif
 
 /** SE051 */
+#ifndef SSS_HAVE_SE05X_VER_06_00
 #define SSS_HAVE_SE05X_VER_06_00 0
+#endif
 
 #if (( 0                             \
     + SSS_HAVE_SE05X_VER_03_XX       \
