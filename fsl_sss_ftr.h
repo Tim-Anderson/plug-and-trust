@@ -87,9 +87,6 @@
  * Selection of Applet version 06_00 enables SE051 features.
  *
  */
-/** SE050 */
-#define SSS_HAVE_SE05X_VER_03_XX 1
-
 /** NXP Internal - 4.4 */
 #define SSS_HAVE_SE05X_VER_04_04 0
 
