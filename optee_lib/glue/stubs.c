@@ -53,46 +53,49 @@ void sss_digest_context_free(sss_digest_t *context)
 	sss_se05x_digest_context_free(se05x_context);
 }
 
-sss_status_t sss_digest_one_go(sss_digest_t *context __unused,
-			       const uint8_t *message __unused,
-			       size_t mlen __unused,
-			       uint8_t *digest __unused,
-			       size_t *dlen __unused)
+sss_status_t sss_digest_one_go(sss_digest_t *context, const uint8_t *message,
+			       size_t mlen, uint8_t *digest, size_t *dlen)
 {
-	return kStatus_SSS_Fail;
+	sss_se05x_digest_t *se05x_context = (sss_se05x_digest_t *)context;
+
+	return sss_se05x_digest_one_go(se05x_context,
+				       message, mlen, digest, dlen);
 }
 
-sss_status_t sss_key_store_set_key(sss_key_store_t *keyStore __unused,
-				   sss_object_t *keyObject __unused,
-				   const uint8_t *data __unused,
-				   size_t dlen __unused,
-				   size_t bit_len __unused,
-				   void *options __unused,
-				   size_t olen __unused)
+sss_status_t sss_key_store_set_key(sss_key_store_t *ks, sss_object_t *ko,
+				   const uint8_t *data, size_t dlen,
+				   size_t bit_len, void *options, size_t olen)
 {
-	return kStatus_SSS_Fail;
+	sss_se05x_key_store_t *se05x_keystore = (sss_se05x_key_store_t *)ks;
+	sss_se05x_object_t *se05x_keyobject = (sss_se05x_object_t *)ko;
+
+	return sss_se05x_key_store_set_key(se05x_keystore, se05x_keyobject,
+					   data, dlen, bit_len,
+					   options, olen);
 }
 
-sss_status_t sss_key_store_get_key(sss_key_store_t *key_store __unused,
-				   sss_object_t *key_object __unused,
-				   uint8_t *data __unused,
-				   size_t *dlen __unused,
-				   size_t *bit_len __unused)
+sss_status_t sss_key_store_get_key(sss_key_store_t *ks, sss_object_t *ko,
+				   uint8_t *data, size_t *dlen, size_t *bit_len)
 {
-	return kStatus_SSS_Fail;
+	sss_se05x_key_store_t *se05x_keystore = (sss_se05x_key_store_t *)ks;
+	sss_se05x_object_t *se05x_keyobject = (sss_se05x_object_t *)ko;
+
+	return sss_se05x_key_store_get_key(se05x_keystore, se05x_keyobject,
+					   data, dlen, bit_len);
 }
 
-sss_status_t sss_rng_context_init(sss_rng_context_t *context __unused,
-				  sss_session_t *session __unused)
+sss_status_t sss_rng_context_init(sss_rng_context_t *context,
+				  sss_session_t *session)
 {
-	return kStatus_SSS_Fail;
+	return sss_se05x_rng_context_init((sss_se05x_rng_context_t *)context,
+					  (sss_se05x_session_t *)session);
 }
 
-sss_status_t sss_rng_get_random(sss_rng_context_t *context __unused,
-				uint8_t *random_data __unused,
-				size_t dlen __unused)
+sss_status_t sss_rng_get_random(sss_rng_context_t *context,
+				uint8_t *random_data, size_t dlen)
 {
-	return kStatus_SSS_Fail;
+	return sss_se05x_rng_get_random((sss_se05x_rng_context_t *) context,
+					random_data, dlen);
 }
 
 int __isoc99_sscanf(const char *str __unused, const char *format __unused, ...)
