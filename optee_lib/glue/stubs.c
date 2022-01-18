@@ -103,6 +103,11 @@ int __isoc99_sscanf(const char *str __unused, const char *format __unused, ...)
 	return -1;
 }
 
+int sscanf(const char *str __unused, const char *format __unused, ...)
+{
+	return -1;
+}
+
 void * __memcpy_chk(void * dest, const void * src, size_t len, size_t destlen)
 {
 	return memcpy(dest, src, len);
