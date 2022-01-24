@@ -8,6 +8,7 @@
 #define GLUE_H
 
 #include <fsl_sss_api.h>
+#include <tee_api_types.h>
 
 int glue_i2c_read(uint8_t *buffer, int len);
 int glue_i2c_write(uint8_t *buffer, int len);
