@@ -4,6 +4,16 @@ cflags-y += -Wno-error
 cflags-y += -Wno-implicit-function-declaration
 cflags-y += -Wno-suggest-attribute=format
 cflags-y += -Wno-unused-result
+cflags-y += -Wno-unused-parameter
+cflags-y += -Wno-cast-align
+cflags-y += -Wno-declaration-after-statement
+cflags-y += -Wno-strict-aliasing
+cflags-y += -Wno-missing-prototypes
+cflags-y += -Wno-missing-declarations
+cflags-y += -Wno-nested-externs
+cflags-y += -Wno-switch-default
+cflags-y += -Wno-undef
+cflags-y += -Wno-sign-compare
 
 incdirs-y += optee_lib/include
 incdirs-y += hostlib/hostLib/inc/

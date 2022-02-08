@@ -772,6 +772,10 @@ exit:
 
 bool smApduGetArrayBytes(char *str, size_t *len, uint8_t *buffer, size_t buffer_len)
 {
+#if defined(CFG_OPTEE_REVISION_MAJOR) && defined(CFG_OPTEE_REVISION_MINOR)
+  LOG_E("OPTEE unsupported operation, sscanf undefined");
+  return false;
+#else
     if ((strlen(str) % 2) != 0) {
         LOG_E("Invalid length");
         return false;
@@ -793,6 +797,7 @@ bool smApduGetArrayBytes(char *str, size_t *len, uint8_t *buffer, size_t buffer_
         pos += 2;
     }
     return true;
+#endif
 }
 
 bool smApduGetTxRxCase(uint8_t *apdu, size_t apduLen, size_t* data_offset, size_t *dataLen, apduTxRx_case_t *apdu_case)
