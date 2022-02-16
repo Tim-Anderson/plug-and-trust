@@ -24,17 +24,24 @@
 #endif
 
 #if USE_RTOS
-    static SemaphoreHandle_t gSmComlock; 
+    static SemaphoreHandle_t gSmComlock;
 #elif (__GNUC__ && !AX_EMBEDDED)
 #include<pthread.h>
     /* Only for base session with os */
     static pthread_mutex_t gSmComlock;
+#else
+    /* OPTEE */
+     #include <kernel/mutex.h>
+     static struct recursive_mutex gSmComlock;
+     #define USE_LOCK 1
 #endif
 
+#ifndef USE_LOCK
 #if (__GNUC__ && !AX_EMBEDDED) || (USE_RTOS)
 #define USE_LOCK 1
 #else
 #define USE_LOCK 0
+#endif
 #endif
 
 #if USE_RTOS
@@ -61,8 +68,16 @@
     pthread_mutex_unlock(&gSmComlock);                               \
     LOG_D("LOCK Released by thread: %ld", pthread_self());
 #else
-#define LOCK_TXN() LOG_D("no lock mode");
-#define UNLOCK_TXN() LOG_D("no lock mode");
+/* OP-TEE */
+#define LOCK_TXN()                                           \
+    LOG_D("Trying to Acquire Lock thread: %ld", thread_get_id()); \
+    mutex_lock_recursive(&gSmComlock);                                   \
+    LOG_D("LOCK Acquired by thread: %ld", thread_get_id());
+
+#define UNLOCK_TXN()                                             \
+    LOG_D("Trying to Released Lock by thread: %ld", thread_get_id()); \
+    mutex_unlock_recursive(&gSmComlock);                                     \
+    LOG_D("LOCK Released by thread: %ld", thread_get_id());
 #endif
 
 static ApduTransceiveFunction_t pSmCom_Transceive = NULL;
@@ -86,7 +101,9 @@ U16 smCom_Init(ApduTransceiveFunction_t pTransceive, ApduTransceiveRawFunction_t
     {
         LOG_E("\n mutex init has failed");
         return ret;
-    } 
+    }
+#else
+    mutex_init_recursive(&gSmComlock);
 #endif
     pSmCom_Transceive = pTransceive;
     pSmCom_TransceiveRaw = pTransceiveRaw;
@@ -98,9 +115,9 @@ void smCom_DeInit(void)
 {
 #if USE_RTOS
     if (gSmComlock != NULL) {
-    	vSemaphoreDelete(gSmComlock);
+	vSemaphoreDelete(gSmComlock);
         gSmComlock = NULL;
-    } 
+    }
 #elif (__GNUC__ && !AX_EMBEDDED)
     pthread_mutex_destroy(&gSmComlock);
 #endif
@@ -157,7 +174,7 @@ U32 smCom_TransceiveRaw(void *conn_ctx, U8 * pTx, U16 txLen, U8 * pRx, U32 * pRx
 void smCom_Echo(void *conn_ctx, const char *comp, const char *level, const char *buffer)
 {
 #if USE_LOCK
-    /* If this function is called before smcom init 
+    /* If this function is called before smcom init
     then Lock fails, return without echo */
     if (pSmCom_TransceiveRaw == NULL) {
         return;

@@ -61,12 +61,26 @@ extern "C" {
     LOG_D("Trying to Released Lock by thread: %ld", pthread_self()); \
     pthread_mutex_unlock(&lock);                                     \
     LOG_D("LOCK Released by thread: %ld", pthread_self());
+#else
+   /* OP-TEE */
+#define LOCK_TXN(lock)                                           \
+    LOG_D("Trying to Acquire Lock thread: %ld", thread_get_id()); \
+    mutex_lock_recursive(&lock);                                   \
+    LOG_D("LOCK Acquired by thread: %ld", thread_get_id());
+
+#define UNLOCK_TXN(lock)                                             \
+    LOG_D("Trying to Released Lock by thread: %ld", thread_get_id()); \
+    mutex_unlock_recursive(&lock);                                     \
+    LOG_D("LOCK Released by thread: %ld", thread_get_id());
+#define USE_LOCK 1
 #endif
 
+#ifndef USE_LOCK
 #if (__GNUC__ && !AX_EMBEDDED) || (USE_RTOS)
 #define USE_LOCK 1
 #else
 #define USE_LOCK 0
+#endif
 #endif
 
 static SE05x_ECSignatureAlgo_t se05x_get_ec_sign_hash_mode(sss_algorithm_t algorithm);
@@ -6247,6 +6261,8 @@ sss_status_t sss_se05x_tunnel_context_init(sss_se05x_tunnel_context_t *context, 
     else {
         LOG_D("Mutex Init successfull");
     }
+#else
+    mutex_init_recursive(&context->channelLock);
 #endif
     return retval;
 }

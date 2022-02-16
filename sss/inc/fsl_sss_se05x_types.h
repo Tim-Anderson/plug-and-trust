@@ -28,13 +28,14 @@
 #if (__GNUC__ && !AX_EMBEDDED)
 #include <pthread.h>
 /* Only for base session with os */
-#endif
 /* FreeRTOS includes. */
-#if USE_RTOS
+#elif USE_RTOS
 #include "FreeRTOS.h"
 #include "FreeRTOSIPConfig.h"
 #include "semphr.h"
 #include "task.h"
+#else
+#include <kernel/mutex.h>
 #endif
 
 /*!
@@ -103,6 +104,9 @@ typedef struct _sss_se05x_tunnel_context
     SemaphoreHandle_t channelLock;
 #elif (__GNUC__ && !AX_EMBEDDED)
     pthread_mutex_t channelLock;
+#else
+    /* OP-TEE */
+    struct recursive_mutex channelLock;
 #endif
 } sss_se05x_tunnel_context_t;
 
