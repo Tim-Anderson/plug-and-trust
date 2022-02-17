@@ -6272,6 +6272,11 @@ void sss_se05x_tunnel_context_free(sss_se05x_tunnel_context_t *context)
     memset(context, 0, sizeof(*context));
 }
 
+#if defined(CFG_NXP_SE05X)
+/* OP-TEE case */
+#include <kernel/mutex.h>
+static struct mutex lock = MUTEX_INITIALIZER;
+
 static smStatus_t sss_se05x_TXn(struct Se05xSession *pSession,
     const tlvHeader_t *hdr,
     uint8_t *cmdBuf,
@@ -6289,6 +6294,7 @@ static smStatus_t sss_se05x_TXn(struct Se05xSession *pSession,
     };
     size_t txBufLen = sizeof(txBuf);
 
+    mutex_lock(&lock);
     ret = pSession->fp_Transform(pSession, hdr, cmdBuf, cmdBufLen, &outHdr, txBuf, &txBufLen, hasle);
     ENSURE_OR_GO_EXIT(ret == SM_OK);
     ret = pSession->fp_RawTXn(
@@ -6298,8 +6304,40 @@ static smStatus_t sss_se05x_TXn(struct Se05xSession *pSession,
 
     ENSURE_OR_GO_EXIT(ret == SM_OK);
 exit:
+    mutex_unlock(&lock);
+
     return ret;
 }
+#else
+static smStatus_t sss_se05x_TXn(struct Se05xSession *pSession,
+				const tlvHeader_t *hdr,
+				uint8_t *cmdBuf,
+				size_t cmdBufLen,
+				uint8_t *rsp,
+				size_t *rspLen,
+				uint8_t hasle)
+{
+	smStatus_t ret     = SM_NOT_OK;
+	tlvHeader_t outHdr = {
+		0,
+	};
+	uint8_t txBuf[SE05X_MAX_BUF_SIZE_CMD] = {
+		0,
+	};
+	size_t txBufLen = sizeof(txBuf);
+
+	ret = pSession->fp_Transform(pSession, hdr, cmdBuf, cmdBufLen, &outHdr, txBuf, &txBufLen, hasle);
+	ENSURE_OR_GO_EXIT(ret == SM_OK);
+	ret = pSession->fp_RawTXn(
+				  pSession->conn_ctx, pSession->pChannelCtx, pSession->authType, &outHdr, txBuf, txBufLen, rsp, rspLen, hasle);
+
+	ret = pSession->fp_DeCrypt(pSession, cmdBufLen, rsp, rspLen, hasle);
+
+	ENSURE_OR_GO_EXIT(ret == SM_OK);
+exit:
+	return ret;
+}
+#endif
 
 static smStatus_t sss_se05x_channel_txnRaw(void *conn_ctx,
     const tlvHeader_t *hdr,
