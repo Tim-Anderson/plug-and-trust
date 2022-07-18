@@ -20,6 +20,8 @@
 #include "sm_timer.h"
 #include <fsl_sss_types.h>
 
+#define FLOW_VERBOSE 1
+
 #ifdef FLOW_VERBOSE
 #define NX_LOG_ENABLE_SMCOM_DEBUG 1
 #endif
@@ -107,6 +109,7 @@ ESESTATUS phNxpEse_open(void **conn_ctx, phNxpEse_initParams initParams, const c
     phNxpEse_Context_t *pnxpese_ctxt = NULL;
     ESESTATUS wConfigStatus = ESESTATUS_SUCCESS;
 
+LOG_E("%s pConnString %s", __FUNCTION__, pConnString);
     if (conn_ctx == NULL) {
         pnxpese_ctxt = &gnxpese_ctxt;
     }
@@ -461,7 +464,7 @@ static int phNxpEse_readPacket(void* conn_ctx, void *pDevHandle, uint8_t * pBuff
         if (ret < 0)
         {
             /*Polling for read on i2c, hence Debug log*/
-            LOG_D("_i2c_read() [HDR]errno : %x ret : %X", errno, ret);
+            LOG_D("_i2c_read() [HDR]errno : not avail ret : %X", ret);
         }
         if(pBuffer[0] == RECIEVE_PACKET_SOF)
         {
@@ -513,7 +516,7 @@ static int phNxpEse_readPacket(void* conn_ctx, void *pDevHandle, uint8_t * pBuff
             ret = phPalEse_i2c_read(pDevHandle, &pBuffer[PH_PROTO_7816_HEADER_LEN], (nNbBytesToRead+PH_PROTO_7816_CRC_LEN));
             if (ret < 0)
             {
-                LOG_D("_i2c_read() [HDR]errno : %x ret : %X", errno, ret);
+                LOG_D("_i2c_read() [HDR]errno : not avail ret : %X", ret);
                 ret = -1;
             }
             else
@@ -541,7 +544,7 @@ static int phNxpEse_readPacket(void* conn_ctx, void *pDevHandle, uint8_t * pBuff
         ret = phPalEse_i2c_read(pDevHandle, &pBuffer[1+headerIndex], numBytesToRead);
         if (ret < 0)
         {
-            LOG_D("_i2c_read() [HDR]errno : %x ret : %X", errno, ret);
+            LOG_D("_i2c_read() [HDR]errno : not avail ret : %X", ret);
         }
         if((pBuffer[1] == CHAINED_PACKET_WITHOUTSEQN) || (pBuffer[1] == CHAINED_PACKET_WITHSEQN))
         {
@@ -564,7 +567,7 @@ static int phNxpEse_readPacket(void* conn_ctx, void *pDevHandle, uint8_t * pBuff
         ret = phPalEse_i2c_read(pDevHandle, &pBuffer[PH_PROTO_7816_HEADER_LEN], (nNbBytesToRead+PH_PROTO_7816_CRC_LEN));
         if (ret < 0)
         {
-            LOG_D("_i2c_read() [HDR]errno : %x ret : %X", errno, ret);
+            LOG_D("_i2c_read() [HDR]errno : not avail ret : %X", ret);
             ret = -1;
         }
         else

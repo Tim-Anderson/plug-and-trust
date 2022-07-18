@@ -78,6 +78,13 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
+#define NX_LOG_ENABLE_SMCOM_DEBUG 1
+#define NX_LOG_ENABLE_APP_DEBUG 1
+#define NX_LOG_ENABLE_HOSTLIB_DEBUG 1
+#define NX_LOG_ENABLE_MBEDTLS_DEBUG 1
+#define NX_LOG_ENABLE_SCP_DEBUG 1
+#define NX_LOG_ENABLE_SSS_DEBUG 1
+
 #define NX_LEVEL_DEBUG 0
 #define NX_LEVEL_INFO 1
 #define NX_LEVEL_WARN 2

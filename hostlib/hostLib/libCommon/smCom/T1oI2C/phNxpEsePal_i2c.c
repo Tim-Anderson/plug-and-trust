@@ -27,6 +27,8 @@
 #include <string.h>
 #include "i2c_a7.h"
 
+#define FLOW_VERBOSE
+
 #ifdef FLOW_VERBOSE
 #define NX_LOG_ENABLE_SMCOM_DEBUG 1
 #endif
@@ -93,6 +95,7 @@ ESESTATUS phPalEse_i2c_open_and_configure(pphPalEse_Config_t pConfig)
     /* open port */
     /*Disable as interface reset happens on every session open*/
     //se05x_ic_reset();
+LOG_E("%s dev name %s", __FUNCTION__, (const char *)pConfig->pDevName);
 retry:
     i2c_ret = axI2CInit(&conn_ctx, (const char *)pConfig->pDevName);
     if (i2c_ret != I2C_OK) {

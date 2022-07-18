@@ -70,6 +70,7 @@ U16 smComT1oI2C_Init(void **conn_ctx, const char *pConnString)
     phNxpEse_initParams initParams;
     initParams.initMode = ESE_MODE_NORMAL;
 
+LOG_E("%s pConnString %s", __FUNCTION__, pConnString);
     if(conn_ctx != NULL) {
         *conn_ctx = NULL;
     }
@@ -91,6 +92,7 @@ U16 smComT1oI2C_Open(void *conn_ctx, U8 mode, U8 seqCnt, U8 *T1oI2Catr, U16 *T1o
     AtrRsp.len = *T1oI2CatrLen;
     AtrRsp.p_data = T1oI2Catr;
 
+ LOG_D("%s conn_ctx 0x%p", __FUNCTION__, conn_ctx);
     if (conn_ctx == NULL) {
         // Connection context is stored in global variable contained in phNxpEse_Api.c
         smComT1oI2C_Init(NULL, NULL);

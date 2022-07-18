@@ -61,9 +61,9 @@ void nLog(const char *subsystem, int level, const char *fmt, ...)
 	 * _extremely_ verbose due to and incorrect WARNING in
 	 * sss_user_impl_symmetric_context_free;
 	 *
-	 */
 	if (level < NX_LEVEL_ERROR && level != 0xff)
 		return;
+	 */
 
 	va_start(ap, fmt);
 	res = snprintk(buf + boffs, sizeof(buf) - boffs,
